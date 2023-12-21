@@ -2,6 +2,7 @@
 package org.firstinspires.ftc;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -18,7 +19,8 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Scantest", group = "Concept")
+
+@Autonomous(name = "Scantest", group = "Opmode RamEaters")
 public class Scantest extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -48,30 +50,24 @@ public class Scantest extends LinearOpMode {
     public void runOpMode() {
 
         initTfod();
+        
+        int i = 0;
 
-        // Wait for the DS start button to be touched.
-        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
-        telemetry.update();
         waitForStart();
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                telemetryTfod();
 
-                // Push telemetry to the Driver Station.
+                
+                int r = detecLocation();
+                telemetry.addData(String.format("r=(%d)", i), "%d ",
+                            r);
+                i++;
                 telemetry.update();
+                sleep(500);                
 
-                // Save CPU resources; can resume streaming when needed.
-                if (gamepad1.dpad_down) {
-                    visionPortal.stopStreaming();
-                } else if (gamepad1.dpad_up) {
-                    visionPortal.resumeStreaming();
-                }
 
-                // Share the CPU.
-                sleep(20);
             }
         }
 
@@ -105,6 +101,8 @@ public class Scantest extends LinearOpMode {
             //.setModelAspectRatio(16.0 / 9.0)
 
             .build();
+            
+            tfod.setZoom(1.5);
 
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -120,10 +118,10 @@ public class Scantest extends LinearOpMode {
         //builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        //builder.enableLiveView(true);
+        builder.enableLiveView(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
+        builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
 
         // Choose whether or not LiveView stops if no processors are enabled.
         // If set "true", monitor shows solid orange screen if no processors enabled.
@@ -137,31 +135,57 @@ public class Scantest extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.40f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
 
     }   // end method initTfod()
 
-    /**
-     * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
-    private void telemetryTfod() {
+    
+    private int detecLocation() {
+        
+        int iTimeOut = 10;
+        int j = 0;
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
+        while (opModeIsActive() && j < iTimeOut) {
+            // Step through the list of recognitions and display info for each one.
+            for (Recognition recognition : currentRecognitions) {
+                double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
+                double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
 
-        // Step through the list of recognitions and display info for each one.
-        for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-        }   // end for() loop
+                telemetry.addData(""," ");
+                telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+                telemetry.addData("- Position", "x=%.0f / y=%.0f", x, y);
+                telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+                
+                if (x < 182)
+                {
+                    telemetry.addData("I am at", "Left");
+                    return 1;
+                }
+                else if (x > 344)
+                {
+                    telemetry.addData("I am at", "Right");
+                    return 3;
+                }
+                else
+                {
+                    telemetry.addData("I am at", "Center");
+                    return 2;
+                }
+                
+                
+            }   // end for() loop
+            
+            sleep(500);
+            j++;
+        }
+        
+        
+        return 1;
 
     }   // end method telemetryTfod()
 
