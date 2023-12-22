@@ -120,9 +120,9 @@ public class Allcode extends OpMode {
     
     //To grab the pixel, move both primary and secondary single bars to their positions
     private void grabPixel() {
-        target2 = 1000;
+         target2 = 975;
         target0 = 0 - target2;
-        target1 = 1050;
+        target1 = 900;
         liftmotor0.setTargetPosition(target0);
         liftmotor1.setTargetPosition(target1);
         liftmotor2.setTargetPosition(target2);
@@ -132,6 +132,7 @@ public class Allcode extends OpMode {
         liftmotor0.setPower(0.1);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.1);
+		clawCenter.setPosition(0.20);
         telemetry.addData("Status", "gamepad2.x");
         telemetry.update();
     } 
@@ -160,7 +161,7 @@ public class Allcode extends OpMode {
     }
     
     //To move the robot to the board, move both primary and secondary single bars to their positions
-    private void backboardPosition(){
+    private void movePosition(){
         target2 = 875;
         target0 = 0 - target2;
         target1 = 500;
@@ -239,9 +240,9 @@ public class Allcode extends OpMode {
            
            initPosition();
 
-        } else if (gamepad2.a) {//when the A button of gamepad 2 is pressed, the robot is at the backboard position
+        } else if (gamepad2.a) {//when the A button of gamepad 2 is pressed, the robot is at the move to backboard position
             
-           backboardPosition();
+           movePosition();
     
         } else if (gamepad2.b) {//when the B button of gamepad 2 is pressed, the robot is at the put pixel position
             

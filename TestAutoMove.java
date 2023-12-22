@@ -1,23 +1,18 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import android.os.Environment;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
+
 import java.util.List;
 
 @Autonomous(name = "TestAutoMove", group = "Opmode RamEaters")
@@ -31,7 +26,7 @@ public class TestAutoMove extends LinearOpMode {
     private Servo clawLeft = null;
     private Servo clawRight = null;
     private final ElapsedTime runtime = new ElapsedTime();
-    private BNO055IMU imu;
+    private IMU imu;
     private double TURN_P = 0.010;
 
     
@@ -45,7 +40,14 @@ public class TestAutoMove extends LinearOpMode {
     public void runOpMode() {
 
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        // Now initialize the IMU with this mounting orientation
+        // This sample expects the IMU to be in a REV Hub and named "imu".
+        imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         leftWheelF = hardwareMap.get(DcMotor.class, "M0");
         rightWheelF = hardwareMap.get(DcMotor.class, "M1");
@@ -65,12 +67,12 @@ public class TestAutoMove extends LinearOpMode {
         rightWheelF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightWheelR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        imuInit();
+        //imuInit();
 
         waitForStart();
 
         if (opModeIsActive()) {
-            r1 = 1;
+            int r1 = 1;
 
             caseLoc(r1);
 
@@ -152,24 +154,26 @@ public class TestAutoMove extends LinearOpMode {
         move(500,0,0,0.5,500);
         telemetry.addData("test ", "move (%s)", "500,0,0,0.5,500");
 
-        move(0,-500,0,0.5,500);
+        move(0,-1500,0,0.5,500);
         telemetry.addData("test ", "move (%s)", "0,-500,0,0.5,500");
 
-        move(0,500,0,0.5,500);
+        move(0,1500,0,0.5,500);
         telemetry.addData("test ", "move (%s)", "0,500,0,0.5,500");
 
         // call twice
         gyroTurn(0);
 
-        move(-100,0,0,0.3,500);
+        move(0,0,200,0.3,500);
 
         gyroTurn(-90);
 
-        move(-100,0,0,0.3,500);
+        move(0,0,-200,0.3,500);
 
-        gyroTurn(-180);
+        gyroTurn(0);
 
         sleep(1000);
+        
+        /*
 
         move(0,50,0,0.5,500);
 
@@ -185,7 +189,7 @@ public class TestAutoMove extends LinearOpMode {
 
         justTurn(-90);
 
-
+        */
 
         telemetry.update();
 
@@ -193,23 +197,14 @@ public class TestAutoMove extends LinearOpMode {
 
 
 
-    private float getHeading() {
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+
+    public double getHeading() {
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        return orientation.getYaw(AngleUnit.DEGREES);
     }
 
 
 
-    private void imuInit() {
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = false;
-        parameters.loggingTag = "imu";
-        imu.initialize(parameters);
-
-    }
 
     private void justTurn(double deg) {
 
@@ -229,10 +224,10 @@ public class TestAutoMove extends LinearOpMode {
             if (Math.abs(motor_output) < 0.020)
                 i = 10001;
             // Send corresponding powers to the motors
-            leftWheelF.setPower(-1 * motor_output);
-            leftWheelR.setPower(-1 * motor_output);
-            rightWheelF.setPower(-1 * motor_output);
-            rightWheelR.setPower(-1 * motor_output);
+            leftWheelF.setPower(1 * motor_output);
+            leftWheelR.setPower(1 * motor_output);
+            rightWheelF.setPower(1 * motor_output);
+            rightWheelR.setPower(1 * motor_output);
 
             telemetry.addData("motor_output : ", motor_output);
             telemetry.addData("target_angle : ", target_angle);
@@ -273,10 +268,10 @@ public class TestAutoMove extends LinearOpMode {
             if (Math.abs(motor_output) < 0.020)
                 i = 10001;
 
-            leftWheelF.setPower(-1 * motor_output);
-            leftWheelR.setPower(-1 * motor_output);
-            rightWheelF.setPower(-1 * motor_output);
-            rightWheelR.setPower(-1 * motor_output);
+            leftWheelF.setPower(1 * motor_output);
+            leftWheelR.setPower(1 * motor_output);
+            rightWheelF.setPower(1 * motor_output);
+            rightWheelR.setPower(1 * motor_output);
 
 
             currentHeading = getHeading();
