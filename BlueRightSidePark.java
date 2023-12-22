@@ -84,8 +84,6 @@ public class BlueRightSidePark extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int i = 0;
-
         leftWheelF = hardwareMap.get(DcMotor.class, "M0");
         rightWheelF = hardwareMap.get(DcMotor.class, "M1");
         leftWheelR = hardwareMap.get(DcMotor.class, "M2");

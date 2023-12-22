@@ -28,7 +28,7 @@ public class Allcode extends OpMode {
     private int target0 = 0;
     private int target1 = 0;
     private int target2 = 0;
-    private double tclawCenter = 0.50;                //Claw Center Servo initial position
+    private double tclawCenter = 0.5;                //Claw Center Servo initial position
     private double planeTarget = 0.5;                //Airplane Servo initial position
     private int on_off1 = 0;
 	private int on_off2 = 0;
@@ -40,7 +40,7 @@ public class Allcode extends OpMode {
     */
     public void init() {
         //4 Wheels are connected to the Control Hub - Motor ports
-         leftWheelF = hardwareMap.get(DcMotor.class, "M0");
+        leftWheelF = hardwareMap.get(DcMotor.class, "M0");
         rightWheelF = hardwareMap.get(DcMotor.class, "M1");
         leftWheelR = hardwareMap.get(DcMotor.class, "M2");
         rightWheelR = hardwareMap.get(DcMotor.class, "M3");
@@ -60,14 +60,12 @@ public class Allcode extends OpMode {
         
         //3 Servos are connected to the Control Hub-Servo ports
         clawCenter = hardwareMap.get(Servo.class, "Es0");
-        clawCenter.setPosition(tclawCenter);
-        
         clawLeft = hardwareMap.get(Servo.class, "Es1");
         clawRight = hardwareMap.get(Servo.class, "Es2");
         
         airplane = hardwareMap.get(Servo.class, "s5");
-        airplane.setPosition(planeTarget);
-        
+        initPosition();
+		
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -89,32 +87,44 @@ public class Allcode extends OpMode {
     private void closeClaw(){
         clawLeft.setPosition(0);
         clawRight.setPosition(0.2);
+        telemetry.addData("Status: ", "Close both claws");
+        telemetry.update();
     }
     
     //To open both claws
     private void openClaw() {
         clawLeft.setPosition(0.2);
         clawRight.setPosition(0);
+        telemetry.addData("Status: ", "Open both claws");
+        telemetry.update();
     }   
     
     //To open left claws
     private void openLeftClaw() {
         clawLeft.setPosition(0.2);
+        telemetry.addData("Status: ", "Open left claw");
+        telemetry.update();
     }
     
     //To close left claws
     private void closeLeftClaw() {
         clawLeft.setPosition(0);
+        telemetry.addData("Status: ", "Close left claw");
+        telemetry.update();
     }
     
     //To open right claws
     private void openRightClaw() {
         clawRight.setPosition(0);
+        telemetry.addData("Status: ", "Open right claw");
+        telemetry.update();
     }
     
     //To close right claws
     private void closeRightClaw() {
         clawRight.setPosition(0.2);
+        telemetry.addData("Status: ", "Close left claw");
+        telemetry.update();
     }
     
     
@@ -133,11 +143,12 @@ public class Allcode extends OpMode {
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.1);
 		clawCenter.setPosition(0.20);
-        telemetry.addData("Status", "gamepad2.x");
+        telemetry.addData("Status: ", "Press Gamepad2.x to grab a pixel");
         telemetry.update();
     } 
     
     //To move both primary and secondary single bars to their initial positions
+	//To move all servos to their initial positions
     private void initPosition() {
         target0 = 0;
         target1 = 0;
@@ -153,10 +164,12 @@ public class Allcode extends OpMode {
         liftmotor0.setPower(0.15);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.15);
+
+        clawCenter.setPosition(tclawCenter);
+
+        airplane.setPosition(planeTarget);
         
-        clawCenter.setPosition(0.50);
-        
-        telemetry.addData("Status", "gamepad2.y");
+        telemetry.addData("Status: ", "Initial Position");
         telemetry.update();
     }
     
@@ -176,7 +189,7 @@ public class Allcode extends OpMode {
         liftmotor0.setPower(0.15);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.15);
-        telemetry.addData("Status", "gamepad2.a");
+        telemetry.addData("Status: ", "Press Gamepad2.a to move robot to the board");
         telemetry.update();
     }
     
@@ -196,7 +209,7 @@ public class Allcode extends OpMode {
         liftmotor0.setPower(0.15);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.15);
-        telemetry.addData("Status", "gamepad2.b");
+        telemetry.addData("Status: ", "Press Gamepad2.b to put the pixel to the board");
         telemetry.update();
     }
         
@@ -260,21 +273,21 @@ public class Allcode extends OpMode {
         } else if (gamepad2.dpad_left) {    //when the dpad_left of gamepad 2 is pressed, airplane servo releases the airplane
             
            airplane.setPosition(0);
-           telemetry.addData("Status", "gamepad2.dpad_left");
+           telemetry.addData("Status: ", "Press Gamepad2.dpad_left to launch the paper airplane");
            telemetry.update();
         
         } else if (gamepad2.dpad_up) {        //when the dpad_up of gamepad 2 is pressed, claws rotate upwards
             
            tclawCenter = tclawCenter + 0.001;
            clawCenter.setPosition(tclawCenter);
-           telemetry.addData("Status", "gamepad2.dpad_up");
+           telemetry.addData("Status: ", "Press Gamepad2.dpad_up to rotat claws upwards");
            telemetry.update();
         
         } else if (gamepad2.dpad_down) {    //when dpad_down of gamepad 2 is pressed, claws rotate downwards
             
           tclawCenter = tclawCenter - 0.001;
           clawCenter.setPosition(tclawCenter);
-          telemetry.addData("Status", "gamepad2.dpad_down");
+          telemetry.addData("Status: ", "Press Gamepad2.dpad_down to rotate claws downwards");
           telemetry.update();
         
         } else if (gamepad1.dpad_up) {        //when dpad-up of gamepad 1 is pressed, the robot raises both bars to get into hanging position
@@ -292,7 +305,7 @@ public class Allcode extends OpMode {
            liftmotor0.setPower(0.15);
            liftmotor1.setPower(0.1);
            liftmotor2.setPower(0.15);
-           telemetry.addData("Status", "gamepad1.dpad_up");
+           telemetry.addData("Status: ", "Press Gamepad1.dpad_up to raise both bars and be ready to hang");
            telemetry.update();
            
            clawLeft.setPosition(0.2);
@@ -314,7 +327,7 @@ public class Allcode extends OpMode {
             liftmotor1.setPower(0.2);
             liftmotor2.setPower(0.15);
            
-            telemetry.addData("Status", "gamepad1.dpad_down");
+            telemetry.addData("Status: ", "Press Gamepad1.dpad_down to retrack the bars");
             telemetry.update();
          
         }
@@ -333,7 +346,7 @@ public class Allcode extends OpMode {
             liftmotor1.setPower(0.2);
             liftmotor2.setPower(0.15);
             
-            telemetry.addData("Status", "gamepad1.dpad_left");
+            telemetry.addData("Status: ", "Press Gamepad1.dpad_left to tighten the bar");
             telemetry.update();
             
         } else if (gamepad1.dpad_right) {  //when dpad-right of gamepad 1 is pressed, the robot decreases the tightness of the hanging position
@@ -351,7 +364,7 @@ public class Allcode extends OpMode {
             liftmotor1.setPower(0.2);
             liftmotor2.setPower(0.15);
 
-            telemetry.addData("Status", "gamepad1.dpad_right");
+            telemetry.addData("Status: ", "Press Gamepad1.dpad_right to release the bar");
             telemetry.update();
             
         } else if (gamepad1.right_bumper) {    //when the right_bumper of gamepad 2 is pressed, claws are closed

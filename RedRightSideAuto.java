@@ -23,8 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import java.util.List;
 
-@Autonomous(name = "NewRR", group = "Opmode RamEaters")
-public class NewRR extends LinearOpMode {
+@Autonomous(name = "RedRightSideAuto", group = "Opmode RamEaters")
+public class RedRightSideAuto extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     
@@ -54,26 +54,26 @@ public class NewRR extends LinearOpMode {
     private DcMotor rightWheelF = null;              //Right Wheel Front
     private DcMotor rightWheelR = null;
     
-	private DcMotor liftmotor0 = null;              //Lift Motor 0 to control the primary single bar
+    private DcMotor liftmotor0 = null;              //Lift Motor 0 to control the primary single bar
     private DcMotor liftmotor1 = null;              //Lift Motor 1 to control the secondary singale bar
     private DcMotor liftmotor2 = null;
-	private Servo clawCenter = null;                
+    private Servo clawCenter = null;                
     private Servo clawLeft = null;
     private Servo clawRight = null;
     private final ElapsedTime runtime = new ElapsedTime();
     private IMU imu;
     private double TURN_P = 0.010;
-	private int target0 = 0;
+    private int target0 = 0;
     private int target1 = 0;
     private int target2 = 0;
-    private double tclawCenter = 0.45;                	//Claw Center Servo initial position
+    private double tclawCenter = 0.45;                    //Claw Center Servo initial position
     private double planeTarget = 0.5;               //Airplane Servo initial position
-    private int on_off1 = 0;						//An indicator for left claw open/close status 
-	private int on_off2 = 0;						//An indicator for right claw open/close status
+    private int on_off1 = 0;                        //An indicator for left claw open/close status 
+    private int on_off2 = 0;                        //An indicator for right claw open/close status
     
     String test = "";
     
-	    private void caseLoc(int loc) {
+        private void caseLoc(int loc) {
 
         gyroTurn(0);
       
@@ -82,29 +82,48 @@ public class NewRR extends LinearOpMode {
         if (loc == 1){
             move(250,0,0,0.3,500);
             gyroTurn(40);
-            grabPixel(); 
-			sleep(2500);
-			//openLeftClaw();
-			putPixel();
-			//sleep(1000);
-           // gyroTurn(-90);
-           // move(3000,0,0,0.7,250);
-           // move(0,-9000,0,0.6,250);
-           // move(0,-400,0,0.6,250);
-           // move(8000,0,0,0.7,250);
-           // move(600,0,0,0.5,250);
-           // gyroTurn(-100);
-			//openRightClaw();
-			goBackToInit();
+            grabPixel();
+            sleep(2500);
+            openLeftClaw();
+            putPixel();
+            sleep(1000);
+            gyroTurn(-90);
+            move(3000,0,0,0.7,250);
+            move(0,-9000,0,0.6,250);
+            move(0,-400,0,0.6,250);
+            move(8000,0,0,0.7,250);
+            move(600,0,0,0.5,250);
+            gyroTurn(-100);
+            openRightClaw();
+            initPosition();
+            sleep(8000);
         }
         else if (loc == 2)
         {
-            move(500,0,0,0.3,500);
+            move(500,0,0,0.6,500);
+            grabPixel();
+            sleep(4000);
+            openLeftClaw();
+            putPixel();
+            sleep(4000);
+            initPosition();
+            sleep(8000);
+            move(2550,0,0,0.3,500);
+            gyroTurn(-90);
+            move(3000,0,0,1,250);
+            move(8000,0,0,1,250);
+            move(7000,0,0,0.5,250);
+            openRightClaw();
+            sleep(2000);
+            initPosition();
+            sleep(8000);
         }
         else
         {
             move(500,0,0,0.3,500);
             gyroTurn(90);
+            initPosition();
+            sleep(8000);
         }
 
         telemetry.update();
@@ -116,7 +135,6 @@ public class NewRR extends LinearOpMode {
 
         initTfod();
         imuInit();
-        int i = 0;
 
         leftWheelF = hardwareMap.get(DcMotor.class, "M0");
         rightWheelF = hardwareMap.get(DcMotor.class, "M1");
@@ -137,53 +155,64 @@ public class NewRR extends LinearOpMode {
         liftmotor0 = hardwareMap.get(DcMotor.class, "Em0");
         liftmotor1 = hardwareMap.get(DcMotor.class, "Em1");
         liftmotor2 = hardwareMap.get(DcMotor.class, "Em2");
-		liftmotor0.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftmotor0.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftmotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftmotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftmotor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftmotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftmotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-		clawLeft = hardwareMap.get(Servo.class, "Es1");
+
+        clawLeft = hardwareMap.get(Servo.class, "Es1");
         clawRight = hardwareMap.get(Servo.class, "Es2");
-		clawCenter = hardwareMap.get(Servo.class, "Es0");
-        clawCenter.setPosition(tclawCenter);
-		closeLeftClaw();
-		closeRightClaw();
+        clawCenter = hardwareMap.get(Servo.class, "Es0");
+
+        initPosition();
+
         waitForStart();
 
         if (opModeIsActive()) {
             //int r1 = detecLocation();
 
-            caseLoc(1);
+            caseLoc(3);
 
             //sleep(15000);
         }
 
-        visionPortal.close();
-
+        if (tfod != null) {
+            visionPortal.close();
+            tfod.shutdown();
+        }
     } 
 
-	//To open left claws
+    //To open left claws
     private void openLeftClaw() {
         clawLeft.setPosition(0.2);
+        telemetry.addData("Status", "Open Left Claw");
+        telemetry.update();
     }
     
     //To close left claws
     private void closeLeftClaw() {
         clawLeft.setPosition(0);
+        telemetry.addData("Status", "Close Left Claw");
+        telemetry.update();
     }
     
     //To open right claws
     private void openRightClaw() {
         clawRight.setPosition(0);
+        telemetry.addData("Status", "Open Right Claw");
+        telemetry.update();
     }
     
     //To close right claws
     private void closeRightClaw() {
         clawRight.setPosition(0.2);
+        telemetry.addData("Status", "Close Right Claw");
+        telemetry.update();
     }
-	
-	//To grab the pixel, move both primary and secondary single bars to their positions
+    
+    //To grab the pixel, move both primary and secondary single bars to their positions
     private void grabPixel() {
         target2 = 975;
         target0 = 0 - target2;
@@ -197,8 +226,8 @@ public class NewRR extends LinearOpMode {
         liftmotor0.setPower(0.1);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.1);
-		clawCenter.setPosition(0.20);
-        telemetry.addData("Status", "gamepad2.x");
+        clawCenter.setPosition(0.20);
+        telemetry.addData("Status", "grabPixel");
         telemetry.update();
     } 
     
@@ -218,17 +247,20 @@ public class NewRR extends LinearOpMode {
         liftmotor0.setPower(0.15);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.15);
-        
-        clawCenter.setPosition(0.45);
-        
-        telemetry.addData("Status", "gamepad2.y");
+        //clawCenter.setPosition(0.45);
+        clawCenter.setPosition(tclawCenter);
+        closeLeftClaw();
+        closeRightClaw();
+
+        telemetry.addData("Status", "initPosition");
         telemetry.update();
     }
-	//To move both primary and secondary single bars to their initial positions
+
+    //To move both primary and secondary single bars to their initial positions
     private void goBackToInit() {
         target2 = 300;
         target0 = 0 - target2;
-        target1 = 0;
+        target1 = 500;
         
         liftmotor0.setTargetPosition(target0);
         liftmotor1.setTargetPosition(target1);
@@ -242,9 +274,9 @@ public class NewRR extends LinearOpMode {
         liftmotor2.setPower(0.15);
         
         clawCenter.setPosition(0.45);
-        
-        telemetry.addData("Status", "gamepad2.y");
+        telemetry.addData("Status", "Go Back to Init Position");
         telemetry.update();
+
     }
     
     //To move the robot to the board, move both primary and secondary single bars to their positions
@@ -263,8 +295,7 @@ public class NewRR extends LinearOpMode {
         liftmotor0.setPower(0.15);
         liftmotor1.setPower(0.1);
         liftmotor2.setPower(0.15);
-        telemetry.addData("Status", "gamepad2.a");
-        telemetry.update();
+
     }
     
     //To put the pixel to the board, move both primary and secondary single bars to their positions
@@ -285,7 +316,7 @@ public class NewRR extends LinearOpMode {
         liftmotor2.setPower(0.15);
         
         clawCenter.setPosition(0);
-        telemetry.addData("Status", "gamepad2.b");
+        telemetry.addData("Status", "putPixel");
         telemetry.update();
     }
 
