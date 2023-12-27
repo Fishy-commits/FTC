@@ -70,13 +70,14 @@ public class BlueRightSidePark extends LinearOpMode {
     
     private void parkRobot() {
 
-        move(10000,0,0,0.5,500);
-        move(9500,0,0,0.5,500);
-        move(0,-9000,0,1,500);
-        move(0,-9000,0,1,500);
-        move(0,-9000,0,1,500);
-        move(0,-9000,0,1,500);
-        move(0,-4000,0,0.5,500);
+        move(500,0,0,0.5,500);
+        move(0,9000,0,0.7,500);
+        move(0,5000,0,0.7,500);
+        move(20000,0,0,1,500);
+        move(20000,0,0,1,500);
+        move(20000,0,0,1,500);
+        move(20000,0,0,1,500);
+        move(10000,0,0,0.7,500);
         telemetry.update();
 
     }
