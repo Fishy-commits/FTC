@@ -85,8 +85,8 @@ public class Allcode extends OpMode {
     
     //To close both claws
     private void closeClaw(){
-        clawLeft.setPosition(0);
-        clawRight.setPosition(0.2);
+        clawLeft.setPosition(0.1);
+        clawRight.setPosition(0.1);
         telemetry.addData("Status: ", "Close both claws");
         telemetry.update();
     }
@@ -130,7 +130,7 @@ public class Allcode extends OpMode {
     
     //To grab the pixel, move both primary and secondary single bars to their positions
     private void grabPixel() {
-         target2 = 975;
+         target2 = 1000;
         target0 = 0 - target2;
         target1 = 900;
         liftmotor0.setTargetPosition(target0);

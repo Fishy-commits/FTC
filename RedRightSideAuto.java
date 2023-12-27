@@ -33,8 +33,9 @@ public class RedRightSideAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "MyModelStoredAsAsset.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
-    // Define the labels recognized in the model for TFOD (must be in training order!)
+    // for example: private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
+    private static final String TFOD_MODEL_ASSET = String.format("%s/FIRST/tflitemodels/stationary.tflite", Environment.getExternalStorageDirectory().getAbsolutePath());
+	// Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
        "Pixel",
     };
@@ -63,6 +64,7 @@ public class RedRightSideAuto extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private IMU imu;
     private double TURN_P = 0.010;
+	
     private int target0 = 0;
     private int target1 = 0;
     private int target2 = 0;
@@ -333,7 +335,7 @@ public class RedRightSideAuto extends LinearOpMode {
             // choose one of the following:
             //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
             //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-            //.setModelAssetName(TFOD_MODEL_ASSET)
+            .setModelAssetName(TFOD_MODEL_ASSET)
             //.setModelFileName(TFOD_MODEL_FILE)
 
             // The following default settings are available to un-comment and edit as needed to 
