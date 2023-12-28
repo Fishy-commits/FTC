@@ -30,14 +30,13 @@ public class RedRightSideAuto extends LinearOpMode {
     
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "MyModelStoredAsAsset.tflite";
+    // For example: private static final String TFOD_MODEL_ASSET = "MyModelStoredAsAsset.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    // for example: private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
-    private static final String TFOD_MODEL_ASSET = String.format("%s/FIRST/tflitemodels/stationary.tflite", Environment.getExternalStorageDirectory().getAbsolutePath());
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/redteamprop.tflite";
 	// Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-       "Pixel",
+       "teampropRed",
     };
 
     /**
@@ -173,9 +172,9 @@ public class RedRightSideAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            //int r1 = detecLocation();
-
-            caseLoc(3);
+            int r = detecLocation();
+			telemetry.update();
+            //caseLoc(r1);
 
             //sleep(15000);
         }
@@ -335,17 +334,16 @@ public class RedRightSideAuto extends LinearOpMode {
             // choose one of the following:
             //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
             //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-            .setModelAssetName(TFOD_MODEL_ASSET)
-            //.setModelFileName(TFOD_MODEL_FILE)
+            //.setModelAssetName(TFOD_MODEL_ASSET)
+            .setModelFileName(TFOD_MODEL_FILE)
 
             // The following default settings are available to un-comment and edit as needed to 
             // set parameters for custom models.
-            //.setModelLabels(LABELS)
-            //.setIsModelTensorFlow2(true)
-            //.setIsModelQuantized(true)
-            //.setModelInputSize(300)
-            //.setModelAspectRatio(16.0 / 9.0)
-
+            .setModelLabels(LABELS)
+            .setIsModelTensorFlow2(true)
+            .setIsModelQuantized(true)
+            .setModelInputSize(300)
+            .setModelAspectRatio(16.0 / 9.0)
             .build();
             
             tfod.setZoom(1.5);
@@ -401,10 +399,10 @@ public class RedRightSideAuto extends LinearOpMode {
                 double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
                 double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
 
-                telemetry.addData(""," ");
-                telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-                telemetry.addData("- Position", "x=%.0f / y=%.0f", x, y);
-                telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+                //telemetry.addData(""," ");
+                //telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+                //telemetry.addData("- Position", "x=%.0f / y=%.0f", x, y);
+                //telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
                 
                 if (x < 182)
                 {
@@ -429,7 +427,7 @@ public class RedRightSideAuto extends LinearOpMode {
             j++;
         }
         
-        
+        telemetry.addData("I can't find team prop so choose default location", "Left");
         return 1;
 
     } 
