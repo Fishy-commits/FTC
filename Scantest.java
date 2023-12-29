@@ -35,7 +35,8 @@ public class Scantest extends LinearOpMode {
     // Define the labels recognized in the model for TFOD (must be in training order!)
     
     private static final String[] LABELS = {
-       "teampropRed",
+       "Redprop",
+	   "Blueprop"
     };
 
     /**

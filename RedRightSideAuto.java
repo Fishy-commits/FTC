@@ -36,7 +36,8 @@ public class RedRightSideAuto extends LinearOpMode {
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/Teamprop.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-       "teampropRed",
+       "Redprop",
+	   "Blueprop"
     };
 
     /**
@@ -80,7 +81,7 @@ public class RedRightSideAuto extends LinearOpMode {
       
         //sleep(500);
 
-        if (loc == 1){            //left
+        if (loc == 1){					//left
             move(250,0,0,0.4,500);
             gyroTurn(40);
             grabPixel();
@@ -93,7 +94,7 @@ public class RedRightSideAuto extends LinearOpMode {
             move(4000,0,0,0.7,500);
             move(8000,0,0,0.7,500);
         }
-        else if (loc == 2)            //center
+        else if (loc == 2)				//center
         {
             move(500,0,0,0.4,500);
             grabPixel();
@@ -106,7 +107,7 @@ public class RedRightSideAuto extends LinearOpMode {
             move(6000,0,0,0.7,500);
             move(8000,0,0,0.7,500);
         }
-        else if (loc == 3){                //right
+        else if (loc == 3){				//right
             move(250,0,0,0.3,500);
             gyroTurn(-40);
             grabPixel();
@@ -165,9 +166,9 @@ public class RedRightSideAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            //int r = detecLocation();
-            //telemetry.update();
-            caseLoc(1);
+            int r = detecLocation();
+            telemetry.update();
+            caseLoc(r);
 
             //sleep(15000);
         }

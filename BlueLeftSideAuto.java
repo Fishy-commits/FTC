@@ -36,7 +36,8 @@ public class BlueLeftSideAuto extends LinearOpMode {
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/Teamprop.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-       "teampropRed",
+       "Redprop",
+	   "Blueprop"
     };
 
     /**
@@ -81,7 +82,7 @@ public class BlueLeftSideAuto extends LinearOpMode {
         //sleep(500);
 
         if (loc == 1){            //left
-            move(250,0,0,0.4,500);
+            move(250,0,0,0.3,500);
             gyroTurn(40);
             grabPixel();
             sleep(3500);
@@ -89,9 +90,9 @@ public class BlueLeftSideAuto extends LinearOpMode {
             sleep(1000);
             initPosition();
             sleep(5000);
-            gyroTurn(-90);
-            move(6000,0,0,0.7,500);
-            move(6000,0,0,0.7,500);
+            gyroTurn(90);
+            move(8000,0,0,0.7,500);
+            move(4000,0,0,0.7,500);
         }
         else if (loc == 2)            //center
         {
@@ -102,12 +103,12 @@ public class BlueLeftSideAuto extends LinearOpMode {
             sleep(1000);
             initPosition();
             sleep(5000);
-            gyroTurn(-90);
+            gyroTurn(90);
             move(6000,0,0,0.7,500);
             move(8000,0,0,0.7,500);
         }
         else if (loc == 3){                //right
-            move(250,0,0,0.3,500);
+            move(250,0,0,0.4,500);
             gyroTurn(-40);
             grabPixel();
             sleep(3500);
@@ -115,9 +116,9 @@ public class BlueLeftSideAuto extends LinearOpMode {
             sleep(1000);
             initPosition();
             sleep(5000);
-            gyroTurn(-90);
-            move(8000,0,0,0.7,500);
-            move(4000,0,0,0.7,500);
+            gyroTurn(90);
+            move(6000,0,0,0.7,500);
+            move(6000,0,0,0.7,500);
         }
 
         telemetry.update();
@@ -165,9 +166,9 @@ public class BlueLeftSideAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            //int r = detecLocation();
-            //telemetry.update();
-            caseLoc(1);
+            int r = detecLocation();
+            telemetry.update();
+            caseLoc(r);
 
             //sleep(15000);
         }
