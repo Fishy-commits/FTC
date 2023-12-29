@@ -23,8 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import java.util.List;
 
-@Autonomous(name = "RedRightSideAuto", group = "Opmode RamEaters")
-public class RedRightSideAuto extends LinearOpMode {
+@Autonomous(name = "BlueLeftSideAuto", group = "Opmode RamEaters")
+public class BlueLeftSideAuto extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     
@@ -90,8 +90,8 @@ public class RedRightSideAuto extends LinearOpMode {
             initPosition();
             sleep(5000);
             gyroTurn(-90);
-            move(4000,0,0,0.7,500);
-            move(8000,0,0,0.7,500);
+            move(6000,0,0,0.7,500);
+            move(6000,0,0,0.7,500);
         }
         else if (loc == 2)            //center
         {
@@ -116,8 +116,8 @@ public class RedRightSideAuto extends LinearOpMode {
             initPosition();
             sleep(5000);
             gyroTurn(-90);
-            move(6000,0,0,0.7,500);
-            move(6000,0,0,0.7,500);
+            move(8000,0,0,0.7,500);
+            move(4000,0,0,0.7,500);
         }
 
         telemetry.update();

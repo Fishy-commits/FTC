@@ -23,8 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import java.util.List;
 
-@Autonomous(name = "RedRightSideAuto", group = "Opmode RamEaters")
-public class RedRightSideAuto extends LinearOpMode {
+@Autonomous(name = "RedLeftSideAuto", group = "Opmode RamEaters")
+public class RedLeftSideAuto extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     
@@ -88,10 +88,14 @@ public class RedRightSideAuto extends LinearOpMode {
             openLeftClaw();
             sleep(1000);
             initPosition();
-            sleep(5000);
-            gyroTurn(-90);
-            move(4000,0,0,0.7,500);
-            move(8000,0,0,0.7,500);
+            sleep(4000);
+            gyroTurn(-10);
+            move(0,-3000,0,0.6,900);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(10000,0,0,0.7,500);
         }
         else if (loc == 2)            //center
         {
@@ -102,9 +106,11 @@ public class RedRightSideAuto extends LinearOpMode {
             sleep(1000);
             initPosition();
             sleep(5000);
-            gyroTurn(-90);
-            move(6000,0,0,0.7,500);
-            move(8000,0,0,0.7,500);
+            move(0,-3000,0,0.6,900);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
         }
         else if (loc == 3){                //right
             move(250,0,0,0.3,500);
@@ -114,10 +120,14 @@ public class RedRightSideAuto extends LinearOpMode {
             openLeftClaw();
             sleep(1000);
             initPosition();
-            sleep(5000);
-            gyroTurn(-90);
-            move(6000,0,0,0.7,500);
-            move(6000,0,0,0.7,500);
+            sleep(4000);
+            gyroTurn(10);
+            move(0,-3000,0,0.6,900);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(20000,0,0,1,500);
+            move(10000,0,0,0.7,500);
         }
 
         telemetry.update();
@@ -165,9 +175,9 @@ public class RedRightSideAuto extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            //int r = detecLocation();
-            //telemetry.update();
-            caseLoc(1);
+            int r = detecLocation();
+            telemetry.update();
+            caseLoc(r);
 
             //sleep(15000);
         }
